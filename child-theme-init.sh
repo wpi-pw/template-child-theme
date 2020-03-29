@@ -40,7 +40,7 @@ elif [ "$(wpi_yq themes.child.package)" == "wp-cli" ]; then
     wp theme install $(wpi_yq themes.child.zip) --quiet
   else
     # Get child theme version from config
-    if [ "$package_ver" != "null" ] && [ "$package_ver" != "*" ]; then
+    if [ "$package_ver" != "null" ] && [ "$package_ver" ] && [ "$package_ver" != "*" ]; then
       version="--version=$package_ver --force"
     fi
     # Default child theme install via wp-cli
@@ -48,14 +48,14 @@ elif [ "$(wpi_yq themes.child.package)" == "wp-cli" ]; then
   fi
 
   # Run renaming process
-  if [ "$(wpi_yq themes.child.rename)" != "null" ]; then
+  if [ "$(wpi_yq themes.child.rename)" != "null" ] && [ "$(wpi_yq themes.child.rename)" ]; then
     # Run rename command
     mv ${PWD}/web/$content_dir/themes/$package ${PWD}/web/$content_dir/themes/$(wpi_yq themes.child.rename)
   fi
 fi
 
 # Get child theme version from config
-if [ "$package_ver" != "null" ] && [ "$package_ver" != "*" ]; then
+if [ "$package_ver" != "null" ] && [ "$package_ver" ] && [ "$package_ver" != "*" ]; then
   json_ver=$package_ver
   # check for commit version
   if [ "$dev_commit" == "dev-master" ]; then
@@ -72,16 +72,16 @@ fi
 if [ "$(wpi_yq themes.child.package)" == "bitbucket" ] || [ "$(wpi_yq themes.child.package)" == "github" ]; then
   # Install child theme from private/public repository via composer
   # Check for setup settings
-  if [ "$(wpi_yq themes.child.setup)" != "null" ]; then
+  if [ "$(wpi_yq themes.child.setup)" != "null" ] && [ "$(wpi_yq themes.child.setup)" ]; then
     name=$(wpi_yq themes.child.setup)
 
     # OAUTH for bitbucket via key and secret
-    if [ "$(wpi_yq themes.child.package)" == "bitbucket" ] && [ "$(wpi_yq init.setup.$name.bitbucket.key)" != "null" ] && [ "$(wpi_yq init.setup.$name.bitbucket.secret)" != "null" ]; then
+    if [ "$(wpi_yq themes.child.package)" == "bitbucket" ] && [ "$(wpi_yq init.setup.$name.bitbucket.key)" != "null" ] && [ "$(wpi_yq init.setup.$name.bitbucket.key)" ] && [ "$(wpi_yq init.setup.$name.bitbucket.secret)" != "null" ] && [ "$(wpi_yq init.setup.$name.bitbucket.secret)" ]; then
       composer config --global --auth bitbucket-oauth.bitbucket.org $(wpi_yq init.setup.$name.bitbucket.key) $(wpi_yq init.setup.$name.bitbucket.secret)
     fi
 
     # OAUTH for github via key and secret
-    if [ "$(wpi_yq themes.child.package)" == "github" ] && [ "$(wpi_yq init.setup.$name.github-token)" != "null" ] && [ "$(wpi_yq init.setup.$name.github-token)" != "null" ]; then
+    if [ "$(wpi_yq themes.child.package)" == "github" ] && [ "$(wpi_yq init.setup.$name.github-token)" != "null" ] && [ "$(wpi_yq init.setup.$name.github-token)" ] && [ "$(wpi_yq init.setup.$name.github-token)" != "null" ] && [ "$(wpi_yq init.setup.$name.github-token)" ]; then
       composer config -g github-oauth.github.com $(wpi_yq init.setup.$name.github-token)
     fi
   fi
@@ -96,7 +96,7 @@ if [ "$(wpi_yq themes.child.package)" == "bitbucket" ] || [ "$(wpi_yq themes.chi
   fi
 
   # Rename the package if config exist
-  if [ "$(wpi_yq themes.child.rename)" != "null" ]; then
+  if [ "$(wpi_yq themes.child.rename)" != "null" ] && [ "$(wpi_yq themes.child.rename)" ]; then
       package=$(wpi_yq themes.child.rename)
   fi
 
@@ -123,18 +123,18 @@ fi
 # Child theme setup variarable
 name=$(wpi_yq themes.child.setup)
 # Check if setup exist
-if [ "$(wpi_yq init.setup.$name.composer)" != "null" ]; then
+if [ "$(wpi_yq init.setup.$name.composer)" != "null" ] && [ "$(wpi_yq init.setup.$name.composer)" ]; then
   composer=$(wpi_yq init.setup.$name.composer)
   # Run install composer script in the child theme
-  if [ "$composer" != "null" ] && [ "$composer" == "install" ] || [ "$composer" == "update" ]; then
+  if [ "$composer" != "null" ] && [ "$composer" ] && [ "$composer" == "install" ] || [ "$composer" == "update" ]; then
     composer $composer -d ${PWD}/web/$content_dir/themes/$repo_name $no_dev --quiet
-  elif [ "$composer" != "null" ] && [ "$composer" == "dump-autoload" ]; then
+  elif [ "$composer" != "null" ] && [ "$composer" ] && [ "$composer" == "dump-autoload" ]; then
     composer -d ${PWD}/web/$content_dir/themes/$repo_name dump-autoload -o --quiet
   fi
 fi
 
 # Run npm scripts
-if [ "$(wpi_yq init.setup.$name.npm)" != "null" ]; then
+if [ "$(wpi_yq init.setup.$name.npm)" != "null" ] && [ "$(wpi_yq init.setup.$name.npm)" ]; then
   # run npm install
   npm i ${PWD}/web/$content_dir/themes/$repo_name &> /dev/null
   if [ "$cur_env" == "production" ] || [ "$cur_env" == "staging" ]; then
